@@ -3,38 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CutiBot - Active Chats</title>
-    <link rel="stylesheet" href="style.css">
+    <title>AI Chatbot Platform</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-
-    <div class="phone-container">
-        <div class="chat-header">
-            <span class="nav-icon">←</span>
-            <strong>Active Chats</strong>
-            <span class="nav-icon">⚙️</span>
-        </div>
-
-        <div class="chat-body" id="chat-box">
-            <div class="chat-bubble bot-bubble">
-                Hello Mia! I'm CutiBot 💗
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <button id="new-chat-btn"><i class="fa fa-plus"></i> New Chat</button>
             </div>
-            <div class="chat-bubble bot-bubble">
-                How are you today? 😊
+            <div class="chat-sessions-list">
+                {% for s in sessions %}
+                <div class="session-item" data-id="{{ s.id }}">
+                    <i class="fa fa-comments"></i> <span>{{ s.title }}</span>
+                </div>
+                {% endfor %}
             </div>
-        </div>
+            <div class="sidebar-footer">
+                <div class="user-profile-toggle" onclick="toggleModal('profile-modal')">
+                    <img src="{{ url_for('uploaded_file', filename=profile_pic) }}" alt="Profile" class="avatar">
+                    <span>{{ username }}</span>
+                </div>
+                <div class="theme-switch">
+                    <i class="fa fa-moon" id="dark-mode-icon" onclick="toggleDarkMode()"></i>
+                </div>
+                <a href="/logout" class="logout-btn"><i class="fa fa-sign-out-alt"></i></a>
+            </div>
+        </aside>
 
-        <div class="chat-footer">
-            <input type="text" id="user-input" class="chat-input" placeholder="Type a message...">
-            <button id="send-btn" class="send-btn">➔</button>
+        <main class="chat-area">
+            <header class="chat-header">
+                <h3 id="current-chat-title">Select or Create a Chat Session</h3>
+                <div class="header-actions">
+                    <button id="export-btn" title="Export Conversations"><i class="fa fa-download"></i> Export</button>
+                </div>
+            </header>
+            
+            <div class="messages-container" id="messages-container">
+                </div>
+
+            <div class="typing-indicator id="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+
+            <footer class="chat-footer">
+                <div class="input-wrapper">
+                    <button id="voice-btn" title="Voice Input"><i class="fa fa-microphone"></i></button>
+                    <input type="text" id="user-input" placeholder="Type a message..." disabled>
+                    <button id="send-btn" disabled><i class="fa fa-paper-plane"></i></button>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <div class="modal" id="profile-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="toggleModal('profile-modal')">&times;</span>
+            <h3>Update Profile Information</h3>
+            <form action="/profile/update" method="POST" enctype="multipart/form-data">
+                <label>Username</label>
+                <input type="text" name="username" value="{{ username }}" required>
+                <label>Profile Picture</label>
+                <input type="file" name="profile_pic" accept="image/*">
+                <button type="submit" class="save-profile-btn">Save Alterations</button>
+            </form>
         </div>
     </div>
 
-    <div class="demo-nav">
-        <a href="login.html"><button>Go to Login</button></a>
-        <a href="register.html"><button>Go to Register</button></a>
-    </div>
-
-    <script src="script.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
